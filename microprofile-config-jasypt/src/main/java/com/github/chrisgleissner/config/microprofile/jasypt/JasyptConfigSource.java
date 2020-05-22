@@ -53,7 +53,7 @@ public class JasyptConfigSource implements ConfigSource {
 
 
     protected Properties loadProperties() {
-        final String propertyFilename = property("jasypt.properties", "conf/application.properties");
+        final String propertyFilename = property("jasypt.properties", "config/application.properties");
         log.info("Loading properties from {}", propertyFilename);
         final Properties properties = new Properties();
         try (final FileInputStream fis = new FileInputStream(new File(propertyFilename))) {
