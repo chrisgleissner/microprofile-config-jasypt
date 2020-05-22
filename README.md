@@ -12,22 +12,22 @@ that supports [Jasypt](http://www.jasypt.org)-encrypted property values.
 
 ### Encryption of properties
 
-For example, to encrypt a property `foo` using a password `pwd`, either run
+To encrypt a property `foo` using a password `pwd`, either run
 
 ```
-./encrypt.sh pwd foo
+./microprofile-config-jasypt/encrypt.sh pwd foo
 ```
 
 or
 
 ```
-mvn validate -Pencrypt -Djasypt.password=pwd -Dproperty=foo
+mvn -f microprofile-config-jasypt/pom.xml validate -Pencrypt -Djasypt.password=pwd -Dproperty=foo
 ```
 
 which will print
 
 ```
-foo -> ENC(8xM/21CIHYDNS8PbglamVPXKdr5pMQciYiElnQ0ZghlQnGB1fVsF9xwyNuDVfHWF)
+foo -> ENC(eu82k78q/boBye5P574UwNdafDuy9VRy19tdlmM9IeYXWkVIdChdZybEx41rRbdv)
 ```
 
 Then use the entire `ENC`-delimited string (including the leading `ENC(` and trailing `)`) as a property value.
