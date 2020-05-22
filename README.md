@@ -4,7 +4,9 @@ This project contains configuration-related utilities.
 
 ## microprofile-config-jasypt
 
-Eclipse Config Microprofile implementation that supports Jasypt-encrypted property file values. 
+[Eclipse Microprofile Config](https://github.com/eclipse/microprofile-config) implementation that supports [Jasypt](http://www.jasypt.org)-encrypted property file values.
+
+To use it, add a dependency on this project and ensure the `JASYPT_PASSWORD` property is configured.  
 
 Configuration:
 
