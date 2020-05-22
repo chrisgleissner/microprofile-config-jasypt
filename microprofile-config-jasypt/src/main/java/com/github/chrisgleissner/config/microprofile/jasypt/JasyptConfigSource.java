@@ -23,26 +23,30 @@ public class JasyptConfigSource implements ConfigSource {
     private final EncryptableProperties encryptableProperties;
 
     public JasyptConfigSource() {
-        this.encryptableProperties = new EncryptableProperties(loadProperties(), createEncryptor());
+        this.encryptableProperties = new EncryptableProperties(loadProperties(), getEncryptor());
     }
 
-    private String property(String propertyName, String defaultValue) {
+    private static String property(String propertyName, String defaultValue) {
         String envVarName = envVarName(propertyName);
         return Optional.ofNullable(System.getenv(envVarName))
                 .orElseGet(() -> Optional.ofNullable(System.getProperty(propertyName)).orElse(defaultValue));
     }
 
-    private String property(String propertyName) {
+    private static String property(String propertyName) {
         return Optional.ofNullable(property(propertyName, null))
                 .orElseThrow(() -> new RuntimeException(String.format("Please specify an environment variable '%s' " +
                         "or a system property '%s'", envVarName(propertyName), propertyName)));
     }
 
-    private String envVarName(String propertyName) {
-        return PATTERN.matcher(propertyName).replaceAll("_");
+    private static String envVarName(String propertyName) {
+        return PATTERN.matcher(propertyName).replaceAll("_").toUpperCase();
     }
 
-    protected StringEncryptor createEncryptor() {
+    protected StringEncryptor getEncryptor() {
+        return createStringEncryptor();
+    }
+
+    private static StringEncryptor createStringEncryptor() {
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
         encryptor.setPassword(property("jasypt.password"));
         encryptor.setAlgorithm(property("jasypt.algorithm", "PBEWithHMACSHA512AndAES_256"));
@@ -80,5 +84,16 @@ public class JasyptConfigSource implements ConfigSource {
 
     @Override public String getName() {
         return "jasypt-config";
+    }
+
+    public static void main(String[] args) {
+        if (args.length == 0) {
+            System.err.println("Syntax: JasyptConfigSource <propertyToEncrypt>...");
+            System.exit(1);
+        }
+        StringEncryptor stringEncryptor = createStringEncryptor();
+        for (String arg : args) {
+            System.out.println(String.format("%s -> ENC(%s)", arg, stringEncryptor.encrypt(arg)));
+        }
     }
 }
