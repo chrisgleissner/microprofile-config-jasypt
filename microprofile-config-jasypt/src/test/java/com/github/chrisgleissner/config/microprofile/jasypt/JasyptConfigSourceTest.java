@@ -1,5 +1,7 @@
 package com.github.chrisgleissner.config.microprofile.jasypt;
 
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -29,5 +31,12 @@ class JasyptConfigSourceTest {
         assertThat(properties.keySet()).containsExactlyInAnyOrder("a", "b");
         assertThat(properties).containsEntry("a", "1");
         assertThat(properties).containsEntry("b", "2");
+    }
+
+    @Test
+    void getConfig() {
+        Config config = ConfigProvider.getConfig();
+        assertThat(config.getValue("a", String.class)).isEqualTo("1");
+        assertThat(config.getValue("b", String.class)).isEqualTo("2");
     }
 }
