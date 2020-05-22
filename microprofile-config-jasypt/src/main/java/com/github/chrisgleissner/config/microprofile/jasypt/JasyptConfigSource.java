@@ -29,8 +29,7 @@ public class JasyptConfigSource implements ConfigSource {
     private String property(String propertyName, String defaultValue) {
         String envVarName = envVarName(propertyName);
         return Optional.ofNullable(System.getenv(envVarName))
-                .or(() -> Optional.ofNullable(System.getProperty(propertyName)))
-                .orElse(defaultValue);
+                .orElseGet(() -> Optional.ofNullable(System.getProperty(propertyName)).orElse(defaultValue));
     }
 
     private String property(String propertyName) {
