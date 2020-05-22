@@ -8,4 +8,4 @@ jdk:
   - openjdk11
   - openjdk14
 script:
-  - mvn clean install -Pjacoco coveralls:report
+  - mvn clean install -Pcoveralls coveralls:report
