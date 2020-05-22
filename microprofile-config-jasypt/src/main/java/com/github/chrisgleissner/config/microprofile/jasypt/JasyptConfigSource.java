@@ -17,6 +17,9 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+/**
+ * Eclipse MicroProfile ConfigSource that supports Jasypt-encoded properties.
+ */
 @Slf4j
 public class JasyptConfigSource implements ConfigSource {
     private static final Pattern PATTERN = Pattern.compile("[^a-zA-Z0-9_]");
@@ -53,7 +56,6 @@ public class JasyptConfigSource implements ConfigSource {
         encryptor.setIvGenerator(new RandomIvGenerator());
         return encryptor;
     }
-
 
     protected Properties loadProperties() {
         final String propertyFilename = property("jasypt.properties", "config/application.properties");
