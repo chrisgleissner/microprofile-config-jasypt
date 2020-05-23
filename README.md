@@ -12,21 +12,16 @@ on OpenJDK 8, 11, and 14.
 [Eclipse Microprofile Config](https://github.com/eclipse/microprofile-config) implementation 
 that supports [Jasypt](http://www.jasypt.org)-encrypted property values.
 
-### Encryption of properties
+### Encryption
 
-To encrypt a property `foo` using a password `pwd`, either run
+First, encrypt a property. For example, either of the following two commands encrypts a property `foo` using a password `pwd`: 
 
 ```
 ./microprofile-config-jasypt/encrypt.sh pwd foo
-```
-
-or
-
-```
 mvn -f microprofile-config-jasypt/pom.xml validate -Pencrypt -Djasypt.password=pwd -Dproperty=foo
 ```
 
-which will print
+This will print the encrypted property:
 
 ```
 foo -> ENC(eu82k78q/boBye5P574UwNdafDuy9VRy19tdlmM9IeYXWkVIdChdZybEx41rRbdv)
@@ -34,7 +29,7 @@ foo -> ENC(eu82k78q/boBye5P574UwNdafDuy9VRy19tdlmM9IeYXWkVIdChdZybEx41rRbdv)
 
 Then use the entire `ENC`-delimited string (including the leading `ENC(` and trailing `)`) as a property value.
 
-### Use of encrypted properties
+### Decryption
 
 Add the dependency
 ```
@@ -44,9 +39,12 @@ Add the dependency
     <version>1.0.0</version>
 </dependency>
 ```
-to your project and set the encryption password in the `JASYPT_PASSWORD` environment variable. 
+to your project.
 
-Any `ENC`-delimited property values will now be dynamically decoded.
+Then set the encryption password in the `JASYPT_PASSWORD` environment variable and the location 
+of your property file in the `JASYPT_PROPERTIES` environment variable.
+
+Any `ENC`-delimited properties in this property file will now be decoded at run-time.
 
 ### Configuration
 
