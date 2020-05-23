@@ -10,9 +10,7 @@ on OpenJDK 8, 11, and 14.
 ## microprofile-config-jasypt
 
 This module contains an [Eclipse Microprofile Config](https://github.com/eclipse/microprofile-config) implementation 
-that supports [Jasypt](http://www.jasypt.org)-encrypted property values. 
-
-This allows you to place sensitive data such as passwords in property files.
+that supports [Jasypt](http://www.jasypt.org)-encrypted property values.
 
 ### Encryption
 
