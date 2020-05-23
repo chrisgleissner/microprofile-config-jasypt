@@ -1,6 +1,6 @@
 # config
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.chrisgleissner/config)](https://search.maven.org/artifact/com.github.chrisgleissner/config/)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.chrisgleissner.config/microprofile-config-jasypt)](https://search.maven.org/artifact/com.github.chrisgleissner.config/microprofile-config-jasypt/)
 [![Build Status](https://travis-ci.com/chrisgleissner/config.svg?branch=master)](https://travis-ci.com/chrisgleissner/config)
 [![Coverage Status](https://coveralls.io/repos/github/chrisgleissner/config/badge.svg?branch=master)](https://coveralls.io/github/chrisgleissner/config?branch=master)
 
