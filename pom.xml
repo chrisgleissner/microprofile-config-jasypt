@@ -9,12 +9,9 @@
     <packaging>pom</packaging>
 
     <name>config</name>
+    <description>Java configuration utilities</description>
     <url>https://github.com/chrisgleissner/config</url>
     <inceptionYear>2020</inceptionYear>
-
-    <modules>
-        <module>microprofile-config-jasypt</module>
-    </modules>
 
     <licenses>
         <license>
@@ -24,6 +21,17 @@
             <comments>Apache License, Version 2.0</comments>
         </license>
     </licenses>
+
+    <developers>
+        <developer>
+            <id>cgleissner</id>
+            <name>Christian Gleissner</name>
+        </developer>
+    </developers>
+
+    <modules>
+        <module>microprofile-config-jasypt</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
