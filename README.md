@@ -50,5 +50,5 @@ Any `ENC`-delimited properties in this property file will now be decoded at run-
 | Environment variable | System property name  | Default value  | Description |
 |----------------------|-----------------------|----------------|--------------| 
 | `JASYPT_PASSWORD` | `jasypt.password` | none | Password used for encrypting property values |
-| `JASYPT_ALGORITHM` | `jasypt.algorithm` | `PBEWithHMACSHA512AndAES_256` | Encryption algorithm |
+| `JASYPT_ALGORITHM` | `jasypt.algorithm` | `PBEWithHMACSHA512AndAES_256` | [Encryption algorithm](http://www.jasypt.org/cli.html#Listing_algorithms) |
 | `JASYPT_PROPERTIES` | `jasypt.properties` | `config/application.properties` | Property filename |
