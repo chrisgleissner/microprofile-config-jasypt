@@ -11,7 +11,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -26,25 +30,30 @@ public class JasyptConfigSource implements ConfigSource {
     public static final String JASYPT_ALGORITHM = "jasypt.algorithm";
     public static final String JASYPT_PROPERTIES = "jasypt.properties";
     private static final Pattern PATTERN = Pattern.compile("[^a-zA-Z0-9_]");
+    private static final String CLASSPATH_PREFIX = "classpath:";
+
     private final EncryptableProperties encryptableProperties;
 
     public JasyptConfigSource() {
         this.encryptableProperties = new EncryptableProperties(loadProperties(), getEncryptor());
     }
 
-    private static String property(String propertyName, String defaultValue) {
+    protected String property(String propertyName, String defaultValue) {
         String envVarName = envVarName(propertyName);
         return Optional.ofNullable(System.getenv(envVarName))
                 .orElseGet(() -> Optional.ofNullable(System.getProperty(propertyName)).orElse(defaultValue));
     }
 
-    private static String property(String propertyName) {
-        return Optional.ofNullable(property(propertyName, null))
-                .orElseThrow(() -> new RuntimeException(String.format("Please specify an environment variable '%s' " +
-                        "or a system property '%s'", envVarName(propertyName), propertyName)));
+    private String mandatoryProperty(String propertyName, String defaultValue) {
+        String property = property(propertyName, defaultValue);
+        if (property == null) {
+            throw new RuntimeException(String.format("Please specify an environment variable '%s' " +
+                    "or a system property '%s'", envVarName(propertyName), propertyName));
+        }
+        return property;
     }
 
-    private static String envVarName(String propertyName) {
+    protected String envVarName(String propertyName) {
         return PATTERN.matcher(propertyName).replaceAll("_").toUpperCase();
     }
 
@@ -52,27 +61,60 @@ public class JasyptConfigSource implements ConfigSource {
         return createStringEncryptor();
     }
 
-    private static StringEncryptor createStringEncryptor() {
+    protected StringEncryptor createStringEncryptor() {
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
-        encryptor.setPassword(property(JASYPT_PASSWORD));
-        encryptor.setAlgorithm(property(JASYPT_ALGORITHM, "PBEWithHMACSHA512AndAES_256"));
+        encryptor.setPassword(mandatoryProperty(JASYPT_PASSWORD, getDefaultPassword()));
+        encryptor.setAlgorithm(property(JASYPT_ALGORITHM, getDefaultAlgorithm()));
         encryptor.setIvGenerator(new RandomIvGenerator());
         return encryptor;
     }
 
+    private String getDefaultAlgorithm() {
+        return "PBEWithHMACSHA512AndAES_256";
+    }
+
+    /**
+     * Override this if a custom password resolution strategy is desired.
+     */
+    protected String getDefaultPassword() {
+        return null;
+    }
+
+    protected String getCommaSeparatedPropertyFilenames() {
+        return mandatoryProperty(JASYPT_PROPERTIES, "classpath:application.properties,config/application.properties");
+    }
+
     protected Properties loadProperties() {
-        final String propertyFilename = property(JASYPT_PROPERTIES, "config/application.properties");
-        log.info("Loading properties from {}", propertyFilename);
-        final Properties properties = new Properties();
-        try (final FileInputStream fis = new FileInputStream(new File(propertyFilename))) {
-            properties.load(fis);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("Could not open " + propertyFilename, e);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not access " + propertyFilename, e);
+        final List<String> propertyFilenames = Arrays.asList(getCommaSeparatedPropertyFilenames().split(","));
+        Exception lastException = null;
+        for (final String propertyFilename : propertyFilenames) {
+            log.debug("Trying to load properties from {}", propertyFilename);
+            try (final InputStream is = createInputStream(propertyFilename)) {
+                return createProperties(propertyFilename, is);
+            } catch (Exception e) {
+                lastException = e;
+            }
         }
-        log.info("Loading {} properties from {}", properties.size(), propertyFilename);
+        if (lastException == null) {
+            throw new RuntimeException("Could not load properties from any location in " + propertyFilenames);
+        } else {
+            throw new RuntimeException("Could not load properties from any location in " + propertyFilenames, lastException);
+        }
+    }
+
+    private Properties createProperties(String propertyFilename, InputStream is) throws IOException {
+        final Properties properties = new Properties();
+        properties.load(is);
+        log.info("Loaded {} properties from {}", properties.size(), propertyFilename);
         return properties;
+    }
+
+    private InputStream createInputStream(String location) throws Exception {
+        if (location.startsWith(CLASSPATH_PREFIX)) {
+            return Thread.currentThread().getContextClassLoader().getResourceAsStream(location.substring(CLASSPATH_PREFIX.length()));
+        } else {
+            return new FileInputStream(new File(location));
+        }
     }
 
     @Override public Map<String, String> getProperties() {
@@ -96,7 +138,7 @@ public class JasyptConfigSource implements ConfigSource {
             System.err.println("Syntax: JasyptConfigSource <propertyToEncrypt>...");
             System.exit(1);
         }
-        StringEncryptor stringEncryptor = createStringEncryptor();
+        StringEncryptor stringEncryptor = new JasyptConfigSource().createStringEncryptor();
         for (String arg : args) {
             System.out.println(String.format("%s -> ENC(%s)", arg, stringEncryptor.encrypt(arg)));
         }

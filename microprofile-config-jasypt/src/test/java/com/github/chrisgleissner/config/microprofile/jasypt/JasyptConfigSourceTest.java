@@ -17,23 +17,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class JasyptConfigSourceTest {
-    private JasyptConfigSource jcs;
 
-    @BeforeEach
-    public void setUp() {
+    private JasyptConfigSource createJasyptConfigSource() {
         System.setProperty(JASYPT_PASSWORD, "pwd");
-        System.setProperty(JASYPT_PROPERTIES, "src/test/resources/jasypt.properties");
-        jcs = new JasyptConfigSource();
+        System.setProperty(JASYPT_PROPERTIES, "src/test/resources/application.properties");
+        return new JasyptConfigSource();
     }
 
     @Test
     void getValue() {
+        JasyptConfigSource jcs = createJasyptConfigSource();
         assertThat(jcs.getValue("a")).isEqualTo("1");
         assertThat(jcs.getValue("b")).isEqualTo("2");
     }
 
     @Test
     void getProperties() {
+        JasyptConfigSource jcs = createJasyptConfigSource();
         Map<String, String> properties = jcs.getProperties();
         assertThat(properties.keySet()).containsExactlyInAnyOrder("a", "b");
         assertThat(properties).containsEntry("a", "1");
@@ -49,18 +49,28 @@ class JasyptConfigSourceTest {
 
     @Test
     void failsIfNoPasswordSet() {
+        System.setProperty(JASYPT_PROPERTIES, "src/test/resources/application.properties");
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
             System.clearProperty(JASYPT_PASSWORD);
-            jcs = new JasyptConfigSource();
+            new JasyptConfigSource();
         }).withMessage("Please specify an environment variable 'JASYPT_PASSWORD' or a system property 'jasypt.password'");
     }
 
     @Test
-    void failsIfNoPropertyFileNotFound() {
+    void failsIfPropertyFileNotFound() {
+        System.setProperty(JASYPT_PASSWORD, "pwd");
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
-            System.clearProperty(JASYPT_PROPERTIES);
-            jcs = new JasyptConfigSource();
-        }).withMessage("Could not open config/application.properties");
+            System.setProperty(JASYPT_PROPERTIES, "doesNotExist.properties");
+            new JasyptConfigSource();
+        }).withMessage("Could not load properties from any location in [doesNotExist.properties]");
+    }
+
+    @Test
+    void resolvesPropertiesFromDefaultLocationsIfJasyptPasswordPropertyNotSet() {
+        System.setProperty(JASYPT_PASSWORD, "pwd");
+        System.clearProperty(JASYPT_PROPERTIES);
+        JasyptConfigSource jcs = new JasyptConfigSource();
+        assertThat(jcs.getValue("a")).isEqualTo("1");
     }
 
     @Test
