@@ -48,12 +48,10 @@ class JasyptConfigSourceTest {
     }
 
     @Test
-    void failsIfNoPasswordSet() {
+    void returnsEncryptedValueIfNoPasswordSet() {
         System.setProperty(JASYPT_PROPERTIES, "src/test/resources/application.properties");
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
-            System.clearProperty(JASYPT_PASSWORD);
-            new JasyptConfigSource();
-        }).withMessage("Please specify an environment variable 'JASYPT_PASSWORD' or a system property 'jasypt.password'");
+        System.clearProperty(JASYPT_PASSWORD);
+        assertThat(new JasyptConfigSource().getValue("b")).startsWith("ENC(");
     }
 
     @Test

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.iv.RandomIvGenerator;
 import org.jasypt.properties.EncryptableProperties;
 
@@ -31,26 +32,20 @@ public class JasyptConfigSource implements ConfigSource {
     public static final String JASYPT_PROPERTIES = "jasypt.properties";
     private static final Pattern PATTERN = Pattern.compile("[^a-zA-Z0-9_]");
     private static final String CLASSPATH_PREFIX = "classpath:";
+    private static final String DECRYPTION_FAILURE_MESSAGE = "Could not decrypt property {}; falling back to unencrypted property";
 
+    private final Properties properties;
     private final EncryptableProperties encryptableProperties;
 
     public JasyptConfigSource() {
-        this.encryptableProperties = new EncryptableProperties(loadProperties(), getEncryptor());
+        this.properties = loadProperties();
+        this.encryptableProperties = new EncryptableProperties(properties, getEncryptor());
     }
 
     protected String property(String propertyName, String defaultValue) {
         String envVarName = envVarName(propertyName);
         return Optional.ofNullable(System.getenv(envVarName))
                 .orElseGet(() -> Optional.ofNullable(System.getProperty(propertyName)).orElse(defaultValue));
-    }
-
-    private String mandatoryProperty(String propertyName, String defaultValue) {
-        String property = property(propertyName, defaultValue);
-        if (property == null) {
-            throw new RuntimeException(String.format("Please specify an environment variable '%s' " +
-                    "or a system property '%s'", envVarName(propertyName), propertyName));
-        }
-        return property;
     }
 
     protected String envVarName(String propertyName) {
@@ -63,7 +58,7 @@ public class JasyptConfigSource implements ConfigSource {
 
     protected StringEncryptor createStringEncryptor() {
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
-        encryptor.setPassword(mandatoryProperty(JASYPT_PASSWORD, getDefaultPassword()));
+        encryptor.setPassword(property(JASYPT_PASSWORD, getDefaultPassword()));
         encryptor.setAlgorithm(property(JASYPT_ALGORITHM, getDefaultAlgorithm()));
         encryptor.setIvGenerator(new RandomIvGenerator());
         return encryptor;
@@ -74,14 +69,16 @@ public class JasyptConfigSource implements ConfigSource {
     }
 
     /**
-     * Override this if a custom password resolution strategy is desired.
+     * Override this if a custom password resolution strategy is desired. The non-empty default password defined here
+     * is not supposed to be used for encryption, but simplifies instantiating this class of no password is set, e.g. as part of
+     * the Quarkus build.
      */
     protected String getDefaultPassword() {
-        return null;
+        return "419419d231b";
     }
 
     protected String getCommaSeparatedPropertyFilenames() {
-        return mandatoryProperty(JASYPT_PROPERTIES, "classpath:application.properties,config/application.properties");
+        return property(JASYPT_PROPERTIES, "classpath:application.properties,config/application.properties");
     }
 
     protected Properties loadProperties() {
@@ -120,13 +117,22 @@ public class JasyptConfigSource implements ConfigSource {
     @Override public Map<String, String> getProperties() {
         final Map<String, String> propertyMap = new HashMap<>();
         for (final String name: encryptableProperties.stringPropertyNames()) {
-            propertyMap.put(name, encryptableProperties.getProperty(name));
+            propertyMap.put(name, getValue(name));
         }
         return propertyMap;
     }
 
     @Override public String getValue(String key) {
-        return encryptableProperties.getProperty(key);
+        try {
+            return encryptableProperties.getProperty(key);
+        } catch (EncryptionOperationNotPossibleException e) {
+            if (log.isDebugEnabled()) {
+                log.debug(DECRYPTION_FAILURE_MESSAGE, key, e);
+            } else {
+                log.warn(DECRYPTION_FAILURE_MESSAGE, key);
+            }
+            return properties.getProperty(key);
+        }
     }
 
     @Override public String getName() {
