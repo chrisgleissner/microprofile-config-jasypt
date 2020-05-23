@@ -1,5 +1,6 @@
 # config
 
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.chrisgleissner/config)](https://search.maven.org/artifact/com.github.chrisgleissner/config/)
 [![Build Status](https://travis-ci.com/chrisgleissner/config.svg?branch=master)](https://travis-ci.com/chrisgleissner/config)
 [![Coverage Status](https://coveralls.io/repos/github/chrisgleissner/config/badge.svg?branch=master)](https://coveralls.io/github/chrisgleissner/config?branch=master)
 
@@ -35,8 +36,15 @@ Then use the entire `ENC`-delimited string (including the leading `ENC(` and tra
 
 ### Use of encrypted properties
 
-Add a dependency on this project and set the encryption password in the `JASYPT_PASSWORD` environment 
-variable. 
+Add the dependency
+```
+<dependency>
+    <groupId>com.github.chrisgleissner.config</groupId>
+    <artifactId>microprofile-config-jasypt</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+to your project and set the encryption password in the `JASYPT_PASSWORD` environment variable. 
 
 Any `ENC`-delimited property values will now be dynamically decoded.
 
