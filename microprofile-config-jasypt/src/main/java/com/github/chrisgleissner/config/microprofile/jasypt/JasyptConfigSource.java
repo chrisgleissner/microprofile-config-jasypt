@@ -22,6 +22,9 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 public class JasyptConfigSource implements ConfigSource {
+    public static final String JASYPT_PASSWORD = "jasypt.password";
+    public static final String JASYPT_ALGORITHM = "jasypt.algorithm";
+    public static final String JASYPT_PROPERTIES = "jasypt.properties";
     private static final Pattern PATTERN = Pattern.compile("[^a-zA-Z0-9_]");
     private final EncryptableProperties encryptableProperties;
 
@@ -51,14 +54,14 @@ public class JasyptConfigSource implements ConfigSource {
 
     private static StringEncryptor createStringEncryptor() {
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
-        encryptor.setPassword(property("jasypt.password"));
-        encryptor.setAlgorithm(property("jasypt.algorithm", "PBEWithHMACSHA512AndAES_256"));
+        encryptor.setPassword(property(JASYPT_PASSWORD));
+        encryptor.setAlgorithm(property(JASYPT_ALGORITHM, "PBEWithHMACSHA512AndAES_256"));
         encryptor.setIvGenerator(new RandomIvGenerator());
         return encryptor;
     }
 
     protected Properties loadProperties() {
-        final String propertyFilename = property("jasypt.properties", "config/application.properties");
+        final String propertyFilename = property(JASYPT_PROPERTIES, "config/application.properties");
         log.info("Loading properties from {}", propertyFilename);
         final Properties properties = new Properties();
         try (final FileInputStream fis = new FileInputStream(new File(propertyFilename))) {

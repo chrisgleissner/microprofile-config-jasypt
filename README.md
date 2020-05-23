@@ -1,6 +1,7 @@
 # config
 
 [![Build Status](https://travis-ci.com/chrisgleissner/config.svg?branch=master)](https://travis-ci.com/chrisgleissner/config)
+[![Coverage Status](https://coveralls.io/repos/github/chrisgleissner/config/badge.svg?branch=master)](https://coveralls.io/github/chrisgleissner/config?branch=master)
 
 This project contains configuration-related utilities. They require at least Java 8 and have been build
 on OpenJDK 8, 11, and 14.
