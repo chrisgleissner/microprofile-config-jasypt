@@ -13,7 +13,7 @@ This module contains an [Eclipse Microprofile Config](https://github.com/eclipse
 that supports [Jasypt](http://www.jasypt.org)-encrypted property values. This allows to place secrets in publicly accessible 
 property files and resolve them from any application that supports Microprofile Config.
 
-For a [Quarkus](https://quarkus.io)-based example, see the `microprofile-config-jasypt-quarkus-example` module. 
+For a [Quarkus](https://quarkus.io)-based example, see the [`microprofile-config-jasypt-quarkus-example`](https://github.com/chrisgleissner/config/tree/master/microprofile-config-jasypt-quarkus-example) module. 
 
 ### Encryption
 
