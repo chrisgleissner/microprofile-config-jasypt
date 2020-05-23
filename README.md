@@ -9,8 +9,10 @@ on OpenJDK 8, 11, and 14.
 
 ## microprofile-config-jasypt
 
-[Eclipse Microprofile Config](https://github.com/eclipse/microprofile-config) implementation 
-that supports [Jasypt](http://www.jasypt.org)-encrypted property values.
+This module contains an [Eclipse Microprofile Config](https://github.com/eclipse/microprofile-config) implementation 
+that supports [Jasypt](http://www.jasypt.org)-encrypted property values. 
+
+This allows you to place sensitive data such as passwords in property files.
 
 ### Encryption
 
@@ -31,7 +33,7 @@ Then use the entire `ENC`-delimited string (including the leading `ENC(` and tra
 
 ### Decryption
 
-Add the dependency
+Add this dependency to your project:
 ```
 <dependency>
     <groupId>com.github.chrisgleissner.config</groupId>
@@ -39,7 +41,6 @@ Add the dependency
     <version>1.0.0</version>
 </dependency>
 ```
-to your project.
 
 Then set the encryption password in the `JASYPT_PASSWORD` environment variable and the location 
 of your property file in the `JASYPT_PROPERTIES` environment variable.
