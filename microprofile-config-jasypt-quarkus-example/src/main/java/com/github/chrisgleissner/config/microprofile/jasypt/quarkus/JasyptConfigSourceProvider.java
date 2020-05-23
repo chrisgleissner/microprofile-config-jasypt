@@ -1,4 +1,4 @@
-package com.github.chrisgleissner.config.quarkus.jasypt.runtime;
+package com.github.chrisgleissner.config.microprofile.jasypt.quarkus;
 
 import com.github.chrisgleissner.config.microprofile.jasypt.JasyptConfigSource;
 import org.eclipse.microprofile.config.spi.ConfigSource;

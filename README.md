@@ -13,6 +13,8 @@ This module contains an [Eclipse Microprofile Config](https://github.com/eclipse
 that supports [Jasypt](http://www.jasypt.org)-encrypted property values. This allows to place secrets in publicly accessible 
 property files and resolve them from any application that supports Microprofile Config.
 
+For a [Quarkus](https://quarkus.io)-based example, see the `microprofile-config-jasypt-quarkus-example` module. 
+
 ### Encryption
 
 First, encrypt a property. For example, either of the following two commands encrypts a property `foo` using a password `pwd`: 
@@ -32,7 +34,7 @@ Then use the entire `ENC`-delimited string (including the leading `ENC(` and tra
 
 ### Decryption
 
-Add this dependency to your project:
+First add this dependency to your project:
 ```
 <dependency>
     <groupId>com.github.chrisgleissner.config</groupId>
@@ -41,7 +43,13 @@ Add this dependency to your project:
 </dependency>
 ```
 
-Then set the encryption password in the `JASYPT_PASSWORD` environment variable. A comma-separated list of property filenames
+Then create a file `src/main/resources/META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource`
+which contains:
+```
+com.github.chrisgleissner.config.microprofile.jasypt.JasyptConfigSource
+```
+
+Finally, set the encryption password in the `JASYPT_PASSWORD` environment variable. Optionally, a comma-separated list of property filenames
  may be supplied by the `JASYPT_PROPERTIES` environment variable which has sensible defaults for Quarkus.
 
 Any `ENC`-delimited properties in this property file will now be decoded at run-time.
@@ -62,17 +70,3 @@ override its methods, and specify the fully qualified name of your subclass in a
 
 Property filenames specified via `JASYPT_PROPERTIES` are resolved against the classpath if using the `classpath:` prefix, 
 otherwise against the filesystem relative to the current working directory.
-
-## quarkus-jasypt-config
-
-This module contains a Quarkus extension for `microprofile-config-jasypt`. Add this dependency to your project:
-```
-<dependency>
-    <groupId>com.github.chrisgleissner.config</groupId>
-    <artifactId>quarkus-config-jasypt</artifactId>
-    <version>1.0.0</version>
-</dependency>
-```
-
-For configuration details, see above.
-

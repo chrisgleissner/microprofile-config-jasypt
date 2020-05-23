@@ -30,7 +30,7 @@
 
     <modules>
         <module>microprofile-config-jasypt</module>
-        <module>quarkus-config-jasypt</module>
+        <module>microprofile-config-jasypt-quarkus-example</module>
     </modules>
 
     <properties>

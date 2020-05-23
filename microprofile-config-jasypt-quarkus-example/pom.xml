@@ -36,7 +36,7 @@
     <dependencies>
         <dependency>
             <groupId>com.github.chrisgleissner.config</groupId>
-            <artifactId>quarkus-config-jasypt</artifactId>
+            <artifactId>microprofile-config-jasypt</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
