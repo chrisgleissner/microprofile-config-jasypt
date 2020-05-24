@@ -30,11 +30,11 @@ This will print the encrypted property:
 foo -> ENC(eu82k78q/boBye5P574UwNdafDuy9VRy19tdlmM9IeYXWkVIdChdZybEx41rRbdv)
 ```
 
-Then place the entire `ENC(...)`-delimited string as your property value, e.g. in a `src/main/resources/application.properties`
+Then use the entire `ENC(...)`-delimited string as your property value, e.g. in a `src/main/resources/application.properties`
 file. 
 
-The name of the property file is configurable, and you may choose a property file of your liking, be it on the classpath or the 
-filesystem. See the configuration section below for details.
+The name of the property file is configurable, and it may be on the classpath or the filesystem. See the configuration 
+section below for details.
 
 ### Decryption
 
