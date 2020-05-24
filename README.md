@@ -30,7 +30,7 @@ This will print the encrypted property:
 foo -> ENC(eu82k78q/boBye5P574UwNdafDuy9VRy19tdlmM9IeYXWkVIdChdZybEx41rRbdv)
 ```
 
-Then use the entire `ENC`-delimited string (including the leading `ENC(` and trailing `)`) as a property value.
+Then use the entire `ENC(...)`-delimited string as your property value.
 
 ### Decryption
 
