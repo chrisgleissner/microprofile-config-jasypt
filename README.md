@@ -1,4 +1,4 @@
-# config
+# jasypt-microprofile-config
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.chrisgleissner.config/microprofile-config-jasypt)](https://search.maven.org/artifact/com.github.chrisgleissner.config/microprofile-config-jasypt/)
 [![Build Status](https://travis-ci.com/chrisgleissner/config.svg?branch=master)](https://travis-ci.com/chrisgleissner/config)
