@@ -30,7 +30,11 @@ This will print the encrypted property:
 foo -> ENC(eu82k78q/boBye5P574UwNdafDuy9VRy19tdlmM9IeYXWkVIdChdZybEx41rRbdv)
 ```
 
-Then use the entire `ENC(...)`-delimited string as your property value.
+Then place the entire `ENC(...)`-delimited string as your property value, e.g. in a `src/main/resources/application.properties`
+file. 
+
+The name of the property file is configurable, and you may choose a property file of your liking, be it on the classpath or the 
+filesystem. See the configuration section below for details.
 
 ### Decryption
 
@@ -45,7 +49,7 @@ Add this to your `pom.xml`:
 
 Then set the `JASYPT_PASSWORD` environment variable. As per the previous example, set `JASYPT_PASSWORD=pwd`.
 
-Any `ENC(...)`-delimited properties in a `classpath:application.properties` file (configurable) will be decoded at run-time.
+Any `ENC(...)`-delimited property in a `classpath:application.properties` file (configurable) gets decoded at run-time.
 
 ### Configuration
 
