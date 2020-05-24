@@ -34,7 +34,7 @@ Then use the entire `ENC`-delimited string (including the leading `ENC(` and tra
 
 ### Decryption
 
-Add
+Add this to your `pom.xml`:
 ```
 <dependency>
     <groupId>com.github.chrisgleissner.config</groupId>
@@ -42,7 +42,8 @@ Add
     <version>1.0.1</version>
 </dependency>
 ```
-to your `pom.xml` and set the `JASYPT_PASSWORD` environment variable. As per the previous example, set `JASYPT_PASSWORD=pwd`.
+
+Then set the `JASYPT_PASSWORD` environment variable. As per the previous example, set `JASYPT_PASSWORD=pwd`.
 
 Any `ENC(...)`-delimited properties in a `classpath:application.properties` file (configurable) will be decoded at run-time.
 
