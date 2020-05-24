@@ -34,25 +34,17 @@ Then use the entire `ENC`-delimited string (including the leading `ENC(` and tra
 
 ### Decryption
 
-First add this dependency to your project:
+Add
 ```
 <dependency>
     <groupId>com.github.chrisgleissner.config</groupId>
     <artifactId>microprofile-config-jasypt</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
+to your `pom.xml` and set the `JASYPT_PASSWORD` environment variable. As per the previous example, set `JASYPT_PASSWORD=pwd`.
 
-Then create a file `src/main/resources/META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource`
-which contains:
-```
-com.github.chrisgleissner.config.microprofile.jasypt.JasyptConfigSource
-```
-
-Finally, set the encryption password in the `JASYPT_PASSWORD` environment variable. Optionally, a comma-separated list of property filenames
- may be supplied by the `JASYPT_PROPERTIES` environment variable which has sensible defaults for Quarkus.
-
-Any `ENC`-delimited properties in this property file will now be decoded at run-time.
+Any `ENC(...)`-delimited properties in a `classpath:application.properties` file (configurable) will be decoded at run-time.
 
 ### Configuration
 
