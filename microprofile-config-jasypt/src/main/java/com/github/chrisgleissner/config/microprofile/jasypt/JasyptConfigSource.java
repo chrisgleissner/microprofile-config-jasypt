@@ -10,10 +10,8 @@ import org.jasypt.properties.EncryptableProperties;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +38,16 @@ public class JasyptConfigSource implements ConfigSource {
     public JasyptConfigSource() {
         this.properties = loadProperties();
         this.encryptableProperties = new EncryptableProperties(properties, getEncryptor());
+    }
+
+    @Override public String getName() {
+        return "jasypt-config";
+    }
+
+    @Override
+    public int getOrdinal() {
+        // Higher than Quarkus application.properties (250), but lower than Eclipse Microprofile EnvConfigSource (300)
+        return 275;
     }
 
     protected String property(String propertyName, String defaultValue) {
@@ -116,7 +124,7 @@ public class JasyptConfigSource implements ConfigSource {
 
     @Override public Map<String, String> getProperties() {
         final Map<String, String> propertyMap = new HashMap<>();
-        for (final String name: encryptableProperties.stringPropertyNames()) {
+        for (final String name : encryptableProperties.stringPropertyNames()) {
             propertyMap.put(name, getValue(name));
         }
         return propertyMap;
@@ -133,10 +141,6 @@ public class JasyptConfigSource implements ConfigSource {
             }
             return properties.getProperty(key);
         }
-    }
-
-    @Override public String getName() {
-        return "jasypt-config";
     }
 
     public static void main(String[] args) {

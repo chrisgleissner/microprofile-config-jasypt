@@ -13,7 +13,21 @@ This module contains an [Eclipse Microprofile Config](https://github.com/eclipse
 that supports [Jasypt](http://www.jasypt.org)-encrypted property values. This allows to place secrets in publicly accessible 
 property files and resolve them from any application that supports Microprofile Config.
 
-For a [Quarkus](https://quarkus.io)-based example, see the [`microprofile-config-jasypt-quarkus-example`](https://github.com/chrisgleissner/config/tree/master/microprofile-config-jasypt-quarkus-example) module. 
+For a [Quarkus](https://quarkus.io)-based example, see the [`microprofile-config-jasypt-quarkus-example`](https://github.com/chrisgleissner/config/tree/master/microprofile-config-jasypt-quarkus-example) module.
+For demonstration purposes only, the `LogPropertiesBean` in this module logs all properties on startup. 
+
+To verify the password decryption, first build the entire project with `mvn clean install`. Then run 
+`(cd microprofile-config-jasypt-quarkus-example && JASYPT_PASSWORD=pwd java -jar target/*-runner.jar)` to start it with the correct password and observe the logs:
+```
+2020-05-24 11:52:53,598 INFO  [com.git.chr.con.mic.jas.qua.LogPropertiesBean] (main) ConfigSource(name=jasypt-config, ordinal=275):
+{quarkus.datasource.password=sa, quarkus.log.console.color=true, quarkus.datasource.username=sa, quarkus.log.console.level=TRACE, quarkus.flyway.migrate-at-start=true, quarkus.hibernate-orm.database.generation=validate, config.password=sa, quarkus.datasource.db-kind=h2, quarkus.hibernate-orm.log.sql=false, quarkus.datasource.jdbc.url=jdbc:h2:mem:test, quarkus.log.console.enable=true, quarkus.http.port=8080}
+``` 
+
+Finally use `(cd microprofile-config-jasypt-quarkus-example && JASYPT_PASSWORD=wrong_pwd java -jar target/*-runner.jar)` to observe how the encrypted passwords can no longer be decoded:
+```
+2020-05-24 11:53:19,318 INFO  [com.git.chr.con.mic.jas.qua.LogPropertiesBean] (main) ConfigSource(name=jasypt-config, ordinal=275):
+{quarkus.datasource.password=ENC(MCK/0Y9BnM7WVAyNq4gxjcPpGkDvu379ymjnsN2GCtowKxiPJXFHiSK7jI4rYfop), quarkus.log.console.color=true, quarkus.datasource.username=sa, quarkus.log.console.level=TRACE, quarkus.flyway.migrate-at-start=true, quarkus.hibernate-orm.database.generation=validate, config.password=ENC(MCK/0Y9BnM7WVAyNq4gxjcPpGkDvu379ymjnsN2GCtowKxiPJXFHiSK7jI4rYfop), quarkus.datasource.db-kind=h2, quarkus.hibernate-orm.log.sql=false, quarkus.datasource.jdbc.url=jdbc:h2:mem:test, quarkus.log.console.enable=true, quarkus.http.port=8080}
+```
 
 ### Encryption
 
