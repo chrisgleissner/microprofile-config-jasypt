@@ -76,7 +76,7 @@ To verify successful decryption, run the following from repository root
 mvn clean install
 (cd microprofile-config-jasypt-quarkus-example && JASYPT_PASSWORD=pwd java -jar target/*-runner.jar)
 ``` 
-and observe the log contains
+and observe the log contains decrypted passwords:
 ```
 2020-05-24 11:52:53,598 INFO  [com.git.chr.con.mic.jas.qua.LogPropertiesBean] (main) ConfigSource(name=jasypt-config, ordinal=275):
 {quarkus.datasource.password=sa, quarkus.log.console.color=true, quarkus.datasource.username=sa, quarkus.log.console.level=TRACE, quarkus.flyway.migrate-at-start=true, quarkus.hibernate-orm.database.generation=validate, config.password=sa, quarkus.datasource.db-kind=h2, quarkus.hibernate-orm.log.sql=false, quarkus.datasource.jdbc.url=jdbc:h2:mem:test, quarkus.log.console.enable=true, quarkus.http.port=8080}
@@ -89,7 +89,7 @@ To verify a failed decryption, run the following from repository root whilst int
 mvn clean install
 (cd microprofile-config-jasypt-quarkus-example && JASYPT_PASSWORD=wrong-pwd java -jar target/*-runner.jar)
 ```
-and observe the log contains
+and observe the log contains encrypted passwords:
 ```
 2020-05-24 11:53:19,318 INFO  [com.git.chr.con.mic.jas.qua.LogPropertiesBean] (main) ConfigSource(name=jasypt-config, ordinal=275):
 {quarkus.datasource.password=ENC(MCK/0Y9BnM7WVAyNq4gxjcPpGkDvu379ymjnsN2GCtowKxiPJXFHiSK7jI4rYfop), quarkus.log.console.color=true, quarkus.datasource.username=sa, quarkus.log.console.level=TRACE, quarkus.flyway.migrate-at-start=true, quarkus.hibernate-orm.database.generation=validate, config.password=ENC(MCK/0Y9BnM7WVAyNq4gxjcPpGkDvu379ymjnsN2GCtowKxiPJXFHiSK7jI4rYfop), quarkus.datasource.db-kind=h2, quarkus.hibernate-orm.log.sql=false, quarkus.datasource.jdbc.url=jdbc:h2:mem:test, quarkus.log.console.enable=true, quarkus.http.port=8080}
