@@ -1,7 +1,6 @@
 package com.github.chrisgleissner.config.microprofile.jasypt.quarkus;
 
-import lombok.RequiredArgsConstructor;
-
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -13,9 +12,10 @@ import javax.ws.rs.core.Response;
 import java.util.Optional;
 
 @Path("/employee")
-@Produces(MediaType.APPLICATION_JSON) @RequiredArgsConstructor
+@Produces(MediaType.APPLICATION_JSON)
 public class EmployeeResource {
-    private final EntityManager em;
+    // Can't use constructor injection since JaCoCo requires implicit constructor to report correct coverage, see https://quarkus.io/guides/tests-with-coverage
+    @Inject private EntityManager em;
 
     @GET @Path("/{id}")
     public Employee findById(@PathParam("id") Long id) {
