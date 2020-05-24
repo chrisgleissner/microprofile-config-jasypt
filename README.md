@@ -5,8 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/chrisgleissner/config/badge.svg?branch=master)](https://coveralls.io/github/chrisgleissner/config?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/68a242cd2d727a5af43d/maintainability)](https://codeclimate.com/github/chrisgleissner/config/maintainability)
 
-This project contains configuration-related utilities. They require at least Java 8 and are automatically built and tested
-on OpenJDK 11.
+Encrypted properties for [Quarkus](https://quarkus.io) and [Eclipse Microprofile Config](https://github.com/eclipse/microprofile-config). This repo requires at least Java 8 and is automatically tested on OpenJDK 11.
 
 ## Eclipse MicroProfile Config with Jasypt Encryption
 
