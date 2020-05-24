@@ -7,27 +7,13 @@
 This project contains configuration-related utilities. They require at least Java 8 and are automatically built and tested
 on OpenJDK 11.
 
-## microprofile-config-jasypt
+## Eclipse MicroProfile Config with Jasypt Encryption
 
-This module contains an [Eclipse Microprofile Config](https://github.com/eclipse/microprofile-config) implementation 
+The `microprofile-config-jasypt` module contains an [Eclipse Microprofile Config](https://github.com/eclipse/microprofile-config) implementation 
 that supports [Jasypt](http://www.jasypt.org)-encrypted property values. This allows to place secrets in publicly accessible 
-property files and resolve them from any application that supports Microprofile Config.
+property files and resolve them from any application that supports Microprofile Config. 
 
-For a [Quarkus](https://quarkus.io)-based example, see the [`microprofile-config-jasypt-quarkus-example`](https://github.com/chrisgleissner/config/tree/master/microprofile-config-jasypt-quarkus-example) module.
-For demonstration purposes only, the `LogPropertiesBean` in this module logs all properties on startup. 
-
-To verify the password decryption, first build the entire project with `mvn clean install`. Then run 
-`(cd microprofile-config-jasypt-quarkus-example && JASYPT_PASSWORD=pwd java -jar target/*-runner.jar)` to start it with the correct password and observe the logs:
-```
-2020-05-24 11:52:53,598 INFO  [com.git.chr.con.mic.jas.qua.LogPropertiesBean] (main) ConfigSource(name=jasypt-config, ordinal=275):
-{quarkus.datasource.password=sa, quarkus.log.console.color=true, quarkus.datasource.username=sa, quarkus.log.console.level=TRACE, quarkus.flyway.migrate-at-start=true, quarkus.hibernate-orm.database.generation=validate, config.password=sa, quarkus.datasource.db-kind=h2, quarkus.hibernate-orm.log.sql=false, quarkus.datasource.jdbc.url=jdbc:h2:mem:test, quarkus.log.console.enable=true, quarkus.http.port=8080}
-``` 
-
-Finally use `(cd microprofile-config-jasypt-quarkus-example && JASYPT_PASSWORD=wrong_pwd java -jar target/*-runner.jar)` to observe how the encrypted passwords can no longer be decoded:
-```
-2020-05-24 11:53:19,318 INFO  [com.git.chr.con.mic.jas.qua.LogPropertiesBean] (main) ConfigSource(name=jasypt-config, ordinal=275):
-{quarkus.datasource.password=ENC(MCK/0Y9BnM7WVAyNq4gxjcPpGkDvu379ymjnsN2GCtowKxiPJXFHiSK7jI4rYfop), quarkus.log.console.color=true, quarkus.datasource.username=sa, quarkus.log.console.level=TRACE, quarkus.flyway.migrate-at-start=true, quarkus.hibernate-orm.database.generation=validate, config.password=ENC(MCK/0Y9BnM7WVAyNq4gxjcPpGkDvu379ymjnsN2GCtowKxiPJXFHiSK7jI4rYfop), quarkus.datasource.db-kind=h2, quarkus.hibernate-orm.log.sql=false, quarkus.datasource.jdbc.url=jdbc:h2:mem:test, quarkus.log.console.enable=true, quarkus.http.port=8080}
-```
+For an example on how to use this library in [Quarkus](https://quarkus.io) see below.
 
 ### Encryption
 
@@ -84,3 +70,35 @@ override its methods, and specify the fully qualified name of your subclass in a
 
 Property filenames specified via `JASYPT_PROPERTIES` are resolved against the classpath if using the `classpath:` prefix, 
 otherwise against the filesystem relative to the current working directory.
+
+## Encrypted Properties in Quarkus
+
+The `microprofile-config-jasypt-quarkus-example` module contains a [Quarkus](https://quarkus.io)-based example: 
+* Encrypted properties can be used both for normal and for profile-specific properties, eg. properties with the `%prod.` prefix.
+* For demonstration purposes only, the `LogPropertiesBean` in this module logs all properties on startup. 
+
+### Decryption Example
+
+To verify successful decryption, run the following from repository root
+```
+mvn clean install
+(cd microprofile-config-jasypt-quarkus-example && JASYPT_PASSWORD=pwd java -jar target/*-runner.jar)
+``` 
+and observe the log contains
+```
+2020-05-24 11:52:53,598 INFO  [com.git.chr.con.mic.jas.qua.LogPropertiesBean] (main) ConfigSource(name=jasypt-config, ordinal=275):
+{quarkus.datasource.password=sa, quarkus.log.console.color=true, quarkus.datasource.username=sa, quarkus.log.console.level=TRACE, quarkus.flyway.migrate-at-start=true, quarkus.hibernate-orm.database.generation=validate, config.password=sa, quarkus.datasource.db-kind=h2, quarkus.hibernate-orm.log.sql=false, quarkus.datasource.jdbc.url=jdbc:h2:mem:test, quarkus.log.console.enable=true, quarkus.http.port=8080}
+``` 
+
+### Failed Decryption Example
+
+To verify a failed decryption, run the following from repository root whilst intentionally specifying a wrong `JASYPT_PASSWORD`
+```
+mvn clean install
+(cd microprofile-config-jasypt-quarkus-example && JASYPT_PASSWORD=wrong-pwd java -jar target/*-runner.jar)
+```
+and observe the log contains
+```
+2020-05-24 11:53:19,318 INFO  [com.git.chr.con.mic.jas.qua.LogPropertiesBean] (main) ConfigSource(name=jasypt-config, ordinal=275):
+{quarkus.datasource.password=ENC(MCK/0Y9BnM7WVAyNq4gxjcPpGkDvu379ymjnsN2GCtowKxiPJXFHiSK7jI4rYfop), quarkus.log.console.color=true, quarkus.datasource.username=sa, quarkus.log.console.level=TRACE, quarkus.flyway.migrate-at-start=true, quarkus.hibernate-orm.database.generation=validate, config.password=ENC(MCK/0Y9BnM7WVAyNq4gxjcPpGkDvu379ymjnsN2GCtowKxiPJXFHiSK7jI4rYfop), quarkus.datasource.db-kind=h2, quarkus.hibernate-orm.log.sql=false, quarkus.datasource.jdbc.url=jdbc:h2:mem:test, quarkus.log.console.enable=true, quarkus.http.port=8080}
+```

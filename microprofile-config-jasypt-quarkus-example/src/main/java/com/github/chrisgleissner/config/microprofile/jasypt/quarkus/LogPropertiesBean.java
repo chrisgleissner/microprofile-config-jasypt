@@ -1,6 +1,7 @@
 package com.github.chrisgleissner.config.microprofile.jasypt.quarkus;
 
 import io.quarkus.runtime.StartupEvent;
+import io.quarkus.runtime.configuration.ProfileManager;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -17,6 +18,7 @@ public class LogPropertiesBean {
     @ConfigProperty(name = "config.password") String configPassword;
 
     void logPropertiesForDebugging(@Observes StartupEvent ev) {
+        log.info("Active profile: {}", ProfileManager.getActiveProfile());
         log.info("quarkus.datasource.password={}", dbPassword);
         log.info("config.password={}", configPassword);
         StreamSupport.stream(ConfigProvider.getConfig().getConfigSources().spliterator(), false)
