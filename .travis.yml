@@ -6,4 +6,4 @@ cache:
 jdk:
   - openjdk11
 script:
-  - mvn clean install -Pcoveralls coveralls:report
+  - mvn clean install -Pcoveralls,jacoco coveralls:report
