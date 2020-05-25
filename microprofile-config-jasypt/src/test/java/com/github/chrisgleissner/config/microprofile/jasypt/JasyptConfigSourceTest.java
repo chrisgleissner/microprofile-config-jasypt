@@ -55,12 +55,19 @@ class JasyptConfigSourceTest {
     }
 
     @Test
-    void failsIfPropertyFileNotFound() {
+    void returnsNoPropertiesIfPropertyFileNotFound() {
         System.setProperty(JASYPT_PASSWORD, "pwd");
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
-            System.setProperty(JASYPT_PROPERTIES, "doesNotExist.properties");
-            new JasyptConfigSource();
-        }).withMessage("Could not load properties from any location in [doesNotExist.properties]");
+        System.setProperty(JASYPT_PROPERTIES, "doesNotExist.properties");
+        assertThat(new JasyptConfigSource().getProperties()).isEmpty();
+    }
+
+    @Test
+    void returnsPropertiesIfSomePropertyFilesAreNotFound() {
+        System.setProperty(JASYPT_PASSWORD, "pwd");
+        System.setProperty(JASYPT_PROPERTIES, "doesNotExist.properties,src/test/resources/application.properties");
+        JasyptConfigSource jcs = createJasyptConfigSource();
+        assertThat(jcs.getValue("a")).isEqualTo("1");
+        assertThat(jcs.getValue("b")).isEqualTo("2");
     }
 
     @Test

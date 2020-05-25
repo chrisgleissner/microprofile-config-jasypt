@@ -72,17 +72,17 @@ public class JasyptConfigSource implements ConfigSource {
         return encryptor;
     }
 
-    private String getDefaultAlgorithm() {
+    protected String getDefaultAlgorithm() {
         return "PBEWithHMACSHA512AndAES_256";
     }
 
     /**
      * Override this if a custom password resolution strategy is desired. The non-empty default password defined here
      * is not supposed to be used for encryption, but simplifies instantiating this class of no password is set, e.g. as part of
-     * the Quarkus build.
+     * the Quarkus build-time property resolution.
      */
     protected String getDefaultPassword() {
-        return "419419d231b";
+        return "412419d231b";
     }
 
     protected String getCommaSeparatedPropertyFilenames() {
@@ -91,26 +91,26 @@ public class JasyptConfigSource implements ConfigSource {
 
     protected Properties loadProperties() {
         final List<String> propertyFilenames = Arrays.asList(getCommaSeparatedPropertyFilenames().split(","));
-        Exception lastException = null;
         for (final String propertyFilename : propertyFilenames) {
-            log.debug("Trying to load properties from {}", propertyFilename);
+            log.trace("Trying to load properties from {}", propertyFilename);
             try (final InputStream is = createInputStream(propertyFilename)) {
                 return createProperties(propertyFilename, is);
             } catch (Exception e) {
-                lastException = e;
+                if (log.isTraceEnabled()) {
+                    log.trace("Could not open input stream for {}", propertyFilename, e);
+                } else {
+                    log.debug("Could not open input stream for {}", propertyFilename);
+                }
             }
         }
-        if (lastException == null) {
-            throw new RuntimeException("Could not load properties from any location in " + propertyFilenames);
-        } else {
-            throw new RuntimeException("Could not load properties from any location in " + propertyFilenames, lastException);
-        }
+        log.warn("Could not read properties from any file in {}", propertyFilenames);
+        return new Properties();
     }
 
     private Properties createProperties(String propertyFilename, InputStream is) throws IOException {
         final Properties properties = new Properties();
         properties.load(is);
-        log.info("Loaded {} properties from {}", properties.size(), propertyFilename);
+        log.info("Loaded {} {} from {}", properties.size(), properties.size() == 1 ? "property" : "properties", propertyFilename);
         return properties;
     }
 
