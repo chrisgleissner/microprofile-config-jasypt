@@ -9,9 +9,9 @@ Encrypted properties for [Quarkus](https://quarkus.io) and [Eclipse Microprofile
 
 ## Eclipse MicroProfile Config with Jasypt Encryption
 
-The `microprofile-config-jasypt` module contains an [Eclipse Microprofile Config](https://github.com/eclipse/microprofile-config) implementation 
-that supports [Jasypt](http://www.jasypt.org)-encrypted property values. This allows to place secrets in publicly accessible 
-property files and resolve them from any application that supports Microprofile Config. 
+An [Eclipse Microprofile Config](https://github.com/eclipse/microprofile-config) library
+for [Jasypt](http://www.jasypt.org)-encrypted properties. This means you can use secrets in publicly accessible 
+property files and decrypt them transparently at runtime. 
 
 For an example on how to use this library with [Quarkus](https://quarkus.io) see below.
 
