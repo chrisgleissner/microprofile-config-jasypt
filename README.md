@@ -76,13 +76,16 @@ otherwise against the filesystem relative to the current working directory.
 
 ## Encrypted Properties in Quarkus
 
+Two [Quarkus](https://quarkus.io)-based examples are included.
+
 The [`microprofile-config-jasypt-quarkus-example`](https://github.com/chrisgleissner/microprofile-config-jasypt/tree/master/microprofile-config-jasypt-quarkus-example) 
-module contains a [Quarkus](https://quarkus.io)-based example: 
+module shows how to configure the default `JasyptConfigSource` as per the instructions above:
 * Encrypted properties can be used both for normal and for profile-specific properties, eg. properties with the `%prod.` prefix.
 * For demonstration purposes only, the `LogPropertiesBean` in this module logs all properties on startup. 
 
 The [`microprofile-config-jasypt-quarkus-override-example`](https://github.com/chrisgleissner/microprofile-config-jasypt/tree/master/microprofile-config-jasypt-quarkus-override-example) 
-module expands on this and shows how to override the default `JasyptConfigSource`.
+module expands on this and shows how to [override](https://github.com/chrisgleissner/microprofile-config-jasypt/blob/master/microprofile-config-jasypt-quarkus-override-example/src/main/resources/META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource) 
+the default `JasyptConfigSource` with a [`CustomJasyptConfigSource`](https://github.com/chrisgleissner/microprofile-config-jasypt/blob/master/microprofile-config-jasypt-quarkus-override-example/src/main/java/com/github/chrisgleissner/config/microprofile/jasypt/quarkus/CustomJasyptConfigSource.java).
 
 ### Decryption Example
 
