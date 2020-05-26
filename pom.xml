@@ -4,7 +4,7 @@
 
     <groupId>com.github.chrisgleissner.config</groupId>
     <artifactId>config-parent</artifactId>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0.4</version>
     <packaging>pom</packaging>
 
     <name>config</name>
@@ -124,7 +124,7 @@
         <url>https://github.com/chrisgleissner/config</url>
         <connection>scm:git:git://github.com/chrisgleissner/config.git</connection>
         <developerConnection>scm:git:git@github.com:chrisgleissner/config.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v1.0.4</tag>
     </scm>
 
     <profiles>
