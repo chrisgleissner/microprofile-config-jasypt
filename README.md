@@ -45,7 +45,7 @@ Add this to your `pom.xml`:
 <dependency>
     <groupId>com.github.chrisgleissner.config</groupId>
     <artifactId>microprofile-config-jasypt</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 ```
 
