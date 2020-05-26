@@ -20,14 +20,19 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+import static java.lang.Integer.parseInt;
+
 /**
- * Eclipse MicroProfile ConfigSource that supports Jasypt-encoded properties.
+ * <a href="https://github.com/eclipse/microprofile-config">Eclipse MicroProfile Config</a> ConfigSource that
+ * supports <a href="http://www.jasypt.org/">Jasypt</a>-encoded properties.
  */
 @Slf4j
 public class JasyptConfigSource implements ConfigSource {
     public static final String JASYPT_PASSWORD = "jasypt.password";
     public static final String JASYPT_ALGORITHM = "jasypt.algorithm";
+    public static final String JASYPT_ITERATIONS = "jasypt.iterations";
     public static final String JASYPT_PROPERTIES = "jasypt.properties";
+
     private static final Pattern PATTERN = Pattern.compile("[^a-zA-Z0-9_]");
     private static final String CLASSPATH_PREFIX = "classpath:";
     private static final String DECRYPTION_FAILURE_MESSAGE = "Could not decrypt property {}; falling back to unencrypted property";
@@ -44,9 +49,12 @@ public class JasyptConfigSource implements ConfigSource {
         return "jasypt-config";
     }
 
+    /**
+     * Config source priority. Chosen to be higher than Quarkus application.properties (250), but lower than
+     * Eclipse Microprofile EnvConfigSource (300).
+     */
     @Override
     public int getOrdinal() {
-        // Higher than Quarkus application.properties (250), but lower than Eclipse Microprofile EnvConfigSource (300)
         return 275;
     }
 
@@ -68,23 +76,37 @@ public class JasyptConfigSource implements ConfigSource {
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
         encryptor.setPassword(property(JASYPT_PASSWORD, getDefaultPassword()));
         encryptor.setAlgorithm(property(JASYPT_ALGORITHM, getDefaultAlgorithm()));
+        encryptor.setKeyObtentionIterations(parseInt(property(JASYPT_ITERATIONS, Integer.toString(getDefaultIterations()))));
         encryptor.setIvGenerator(new RandomIvGenerator());
         return encryptor;
     }
 
+    /**
+     * Default number of Jasypt key obtention iterations: 1000.
+     */
+    private int getDefaultIterations() {
+        return 1000;
+    }
+
+    /**
+     * Default Jasypt encryption algorithm: PBEWithHMACSHA512AndAES_256.
+     */
     protected String getDefaultAlgorithm() {
         return "PBEWithHMACSHA512AndAES_256";
     }
 
     /**
-     * Override this if a custom password resolution strategy is desired. The non-empty default password defined here
-     * is not supposed to be used for encryption, but simplifies instantiating this class of no password is set, e.g. as part of
-     * the Quarkus build-time property resolution.
+     * Default Jasypt encryption password. Override this if a custom password resolution strategy is desired.
      */
     protected String getDefaultPassword() {
-        return "412419d231b";
+        // The non-empty default password defined here is not supposed to be used for encryption, but simplifies instantiating
+        // this class if no password is set, e.g. as part of the Quarkus build-time property resolution.
+        return " ";
     }
 
+    /**
+     * Comma-separated property filenames, resolved from filesystem or classpath if prefixed with <code>classpath:</code>.
+     */
     protected String getCommaSeparatedPropertyFilenames() {
         return property(JASYPT_PROPERTIES, "classpath:application.properties,config/application.properties");
     }
