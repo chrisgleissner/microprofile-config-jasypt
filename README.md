@@ -5,15 +5,17 @@
 [![Coverage Status](https://coveralls.io/repos/github/chrisgleissner/config/badge.svg?branch=master)](https://coveralls.io/github/chrisgleissner/config?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/68a242cd2d727a5af43d/maintainability)](https://codeclimate.com/github/chrisgleissner/config/maintainability)
 
-Encrypted properties for [Quarkus](https://quarkus.io) and [Eclipse Microprofile Config](https://github.com/eclipse/microprofile-config). This repo requires at least Java 8 and is automatically tested on OpenJDK 11.
+Encrypted properties for [Quarkus](https://quarkus.io) and [Eclipse Microprofile Config](https://github.com/eclipse/microprofile-config).
 
 ## Eclipse MicroProfile Config with Jasypt Encryption
 
-The `microprofile-config-jasypt` module contains an [Eclipse Microprofile Config](https://github.com/eclipse/microprofile-config) implementation 
-that supports [Jasypt](http://www.jasypt.org)-encrypted property values. This allows to place secrets in publicly accessible 
-property files and resolve them from any application that supports Microprofile Config. 
+An [Eclipse Microprofile Config](https://github.com/eclipse/microprofile-config) library
+for [Jasypt](http://www.jasypt.org)-encrypted properties. This means you can use secrets in publicly accessible 
+property files and decrypt them transparently at runtime. 
 
 For an example on how to use this library with [Quarkus](https://quarkus.io) see below.
+
+This repo requires at least Java 8 and is automatically tested on OpenJDK 11.
 
 ### Encryption
 
@@ -43,7 +45,7 @@ Add this to your `pom.xml`:
 <dependency>
     <groupId>com.github.chrisgleissner.config</groupId>
     <artifactId>microprofile-config-jasypt</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
