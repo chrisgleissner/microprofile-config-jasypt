@@ -76,11 +76,13 @@ otherwise against the filesystem relative to the current working directory.
 
 ## Encrypted Properties in Quarkus
 
-The `microprofile-config-jasypt-quarkus-example` module contains a [Quarkus](https://quarkus.io)-based example: 
+The [`microprofile-config-jasypt-quarkus-example`](https://github.com/chrisgleissner/microprofile-config-jasypt/tree/master/microprofile-config-jasypt-quarkus-example) 
+module contains a [Quarkus](https://quarkus.io)-based example: 
 * Encrypted properties can be used both for normal and for profile-specific properties, eg. properties with the `%prod.` prefix.
 * For demonstration purposes only, the `LogPropertiesBean` in this module logs all properties on startup. 
 
-The `microprofile-config-jasypt-quarkus-override-example` module expands on this and shows how to override the default `JasyptConfigSource`.
+The [`microprofile-config-jasypt-quarkus-override-example`](https://github.com/chrisgleissner/microprofile-config-jasypt/tree/master/microprofile-config-jasypt-quarkus-override-example) 
+module expands on this and shows how to override the default `JasyptConfigSource`.
 
 ### Decryption Example
 
