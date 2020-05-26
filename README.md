@@ -12,10 +12,8 @@ Encrypted properties for [Quarkus](https://quarkus.io) and [Eclipse Microprofile
 An [Eclipse Microprofile Config](https://github.com/eclipse/microprofile-config) library
 for [Jasypt](http://www.jasypt.org)-encrypted properties. This means you can use secrets in publicly accessible 
 property files and decrypt them transparently at runtime. 
-
-For an example on how to use this library with [Quarkus](https://quarkus.io) see below.
-
-This repo requires at least Java 8 and is automatically tested on OpenJDK 11.
+* For an example on how to use this library with [Quarkus](https://quarkus.io) see below.
+* This repo requires at least Java 8 and is automatically tested on OpenJDK 11.
 
 ### Encryption
 
