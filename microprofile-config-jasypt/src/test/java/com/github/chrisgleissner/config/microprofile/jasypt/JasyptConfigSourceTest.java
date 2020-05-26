@@ -2,14 +2,18 @@ package com.github.chrisgleissner.config.microprofile.jasypt;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static com.github.chrisgleissner.config.microprofile.jasypt.JasyptConfigSource.JASYPT_PASSWORD;
 import static com.github.chrisgleissner.config.microprofile.jasypt.JasyptConfigSource.JASYPT_PROPERTIES;
@@ -89,5 +93,18 @@ class JasyptConfigSourceTest {
        } finally {
             System.setOut(originalOut);
         }
+    }
+
+    @Test
+    void securePropertiesAndApplicationPropertiesAreResolvedSeperately() {
+        System.clearProperty(JASYPT_PROPERTIES);
+        List<ConfigSource> jasyptConfigSources = StreamSupport.stream(ConfigProvider.getConfig().getConfigSources().spliterator(), false)
+                .filter(cs -> cs.getName().startsWith("JasyptProperties[source=classpath:application.properties]"))
+                .collect(Collectors.toList());
+        assertThat(jasyptConfigSources).hasSize(1);
+        ConfigSource jcs = jasyptConfigSources.get(0);
+        assertThat(jcs.getOrdinal()).isEqualTo(275);
+        assertThat(jcs.toString()).isEqualTo(jcs.getName());
+        assertThat(jcs.getProperties().size()).isEqualTo(2);
     }
 }

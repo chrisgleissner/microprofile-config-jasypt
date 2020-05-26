@@ -1,5 +1,6 @@
 package com.github.chrisgleissner.config.microprofile.jasypt;
 
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.jasypt.encryption.StringEncryptor;
@@ -39,14 +40,17 @@ public class JasyptConfigSource implements ConfigSource {
 
     private final Properties properties;
     private final EncryptableProperties encryptableProperties;
+    private final String propertyFilename;
 
     public JasyptConfigSource() {
-        this.properties = loadProperties();
+        final PropertiesAndName propertiesAndName = loadProperties();
+        this.properties = propertiesAndName.getProperties();
+        this.propertyFilename = propertiesAndName.getFilename();
         this.encryptableProperties = new EncryptableProperties(properties, getEncryptor());
     }
 
     @Override public String getName() {
-        return "jasypt-config";
+        return String.format("JasyptProperties[source=%s]", propertyFilename);
     }
 
     /**
@@ -111,7 +115,13 @@ public class JasyptConfigSource implements ConfigSource {
         return property(JASYPT_PROPERTIES, "classpath:application.properties,config/application.properties");
     }
 
-    protected Properties loadProperties() {
+    @Value
+    static class PropertiesAndName {
+        Properties properties;
+        String filename;
+    }
+
+    protected PropertiesAndName loadProperties() {
         final List<String> propertyFilenames = Arrays.asList(getCommaSeparatedPropertyFilenames().split(","));
         for (final String propertyFilename : propertyFilenames) {
             log.trace("Trying to load properties from {}", propertyFilename);
@@ -126,14 +136,14 @@ public class JasyptConfigSource implements ConfigSource {
             }
         }
         log.warn("Could not read properties from any file in {}", propertyFilenames);
-        return new Properties();
+        return new PropertiesAndName(new Properties(), "n/a");
     }
 
-    private Properties createProperties(String propertyFilename, InputStream is) throws IOException {
+    private PropertiesAndName createProperties(String propertyFilename, InputStream is) throws IOException {
         final Properties properties = new Properties();
         properties.load(is);
         log.info("Loaded {} {} from {}", properties.size(), properties.size() == 1 ? "property" : "properties", propertyFilename);
-        return properties;
+        return new PropertiesAndName(properties, propertyFilename);
     }
 
     private InputStream createInputStream(String location) throws Exception {
@@ -174,5 +184,9 @@ public class JasyptConfigSource implements ConfigSource {
         for (String arg : args) {
             System.out.println(String.format("%s -> ENC(%s)", arg, stringEncryptor.encrypt(arg)));
         }
+    }
+
+    public String toString() {
+        return getName();
     }
 }

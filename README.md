@@ -47,7 +47,12 @@ Add this to your `pom.xml`:
 </dependency>
 ```
 
-Then set the `JASYPT_PASSWORD` environment variable. As per the previous example, set `JASYPT_PASSWORD=pwd`.
+Then add a file at `src/main/resources/META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource` with the content
+```
+com.github.chrisgleissner.config.microprofile.jasypt.JasyptConfigSource
+```
+
+Finally set the `JASYPT_PASSWORD` environment variable when starting your application. As per the previous example, set `JASYPT_PASSWORD=pwd`.
 
 Any `ENC(...)`-delimited property in a `classpath:application.properties` file (configurable) gets decoded at run-time.
 
@@ -74,6 +79,8 @@ otherwise against the filesystem relative to the current working directory.
 The `microprofile-config-jasypt-quarkus-example` module contains a [Quarkus](https://quarkus.io)-based example: 
 * Encrypted properties can be used both for normal and for profile-specific properties, eg. properties with the `%prod.` prefix.
 * For demonstration purposes only, the `LogPropertiesBean` in this module logs all properties on startup. 
+
+The `microprofile-config-jasypt-quarkus-override-example` module expands on this and shows how to override the default `JasyptConfigSource`.
 
 ### Decryption Example
 
