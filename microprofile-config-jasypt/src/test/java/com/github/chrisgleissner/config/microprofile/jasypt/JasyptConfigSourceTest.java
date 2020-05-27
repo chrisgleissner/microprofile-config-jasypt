@@ -15,15 +15,17 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static com.github.chrisgleissner.config.microprofile.jasypt.JasyptConfigSource.JASYPT_KEY;
 import static com.github.chrisgleissner.config.microprofile.jasypt.JasyptConfigSource.JASYPT_PASSWORD;
 import static com.github.chrisgleissner.config.microprofile.jasypt.JasyptConfigSource.JASYPT_PROPERTIES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class JasyptConfigSourceTest {
+    private static final String PWD = "pwd";
 
     private JasyptConfigSource createJasyptConfigSource() {
-        System.setProperty(JASYPT_PASSWORD, "pwd");
+        System.setProperty(JASYPT_PASSWORD, PWD);
         System.setProperty(JASYPT_PROPERTIES, "src/test/resources/application.properties");
         return new JasyptConfigSource();
     }
@@ -33,6 +35,19 @@ class JasyptConfigSourceTest {
         JasyptConfigSource jcs = createJasyptConfigSource();
         assertThat(jcs.getValue("a")).isEqualTo("1");
         assertThat(jcs.getValue("b")).isEqualTo("2");
+    }
+
+    @Test
+    void jasyptKeyProperty() {
+        System.clearProperty(JASYPT_PASSWORD);
+        System.setProperty(JASYPT_KEY, PWD);
+        try {
+            JasyptConfigSource jcs = createJasyptConfigSource();
+            assertThat(jcs.getValue("a")).isEqualTo("1");
+            assertThat(jcs.getValue("b")).isEqualTo("2");
+        } finally {
+            System.clearProperty(JASYPT_KEY);
+        }
     }
 
     @Test

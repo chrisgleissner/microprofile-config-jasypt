@@ -67,6 +67,7 @@ override its methods, and specify the fully qualified name of your subclass in a
 | Environment variable | System property name  | Default value  | Description |
 |----------------------|-----------------------|----------------|--------------| 
 | `JASYPT_PASSWORD` | `jasypt.password` | none | Password used for encrypting property values |
+| `JASYPT_KEY` | `jasypt.key` | none | Synonym for `JASYPT_PASSWORD` |
 | `JASYPT_ALGORITHM` | `jasypt.algorithm` | `PBEWithHMACSHA512AndAES_256` | [Encryption algorithm](http://www.jasypt.org/cli.html#Listing_algorithms) |
 | `JASYPT_ITERATIONS` | `jasypt.iterations` | 1000 | Jasypt key obtention iterations  |
 | `JASYPT_PROPERTIES` | `jasypt.properties` | `classpath:application.properties,config/application.properties` | Comma-separated property filenames, see below.  |

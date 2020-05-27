@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import static java.lang.Integer.parseInt;
@@ -30,6 +31,7 @@ import static java.lang.Integer.parseInt;
 @Slf4j
 public class JasyptConfigSource implements ConfigSource {
     public static final String JASYPT_PASSWORD = "jasypt.password";
+    public static final String JASYPT_KEY = "jasypt.key";
     public static final String JASYPT_ALGORITHM = "jasypt.algorithm";
     public static final String JASYPT_ITERATIONS = "jasypt.iterations";
     public static final String JASYPT_PROPERTIES = "jasypt.properties";
@@ -62,10 +64,14 @@ public class JasyptConfigSource implements ConfigSource {
         return 275;
     }
 
-    protected String property(String propertyName, String defaultValue) {
+    protected String property(String propertyName, Supplier<String> defaultValue) {
         String envVarName = envVarName(propertyName);
         return Optional.ofNullable(System.getenv(envVarName))
-                .orElseGet(() -> Optional.ofNullable(System.getProperty(propertyName)).orElse(defaultValue));
+                .orElseGet(() -> Optional.ofNullable(System.getProperty(propertyName)).orElse(defaultValue.get()));
+    }
+
+    protected String property(String propertyName, String defaultValue) {
+        return property(propertyName, () -> defaultValue);
     }
 
     protected String envVarName(String propertyName) {
@@ -78,7 +84,7 @@ public class JasyptConfigSource implements ConfigSource {
 
     protected StringEncryptor createStringEncryptor() {
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
-        encryptor.setPassword(property(JASYPT_PASSWORD, getDefaultPassword()));
+        encryptor.setPassword(property(JASYPT_PASSWORD, () -> property(JASYPT_KEY, getDefaultPassword())));
         encryptor.setAlgorithm(property(JASYPT_ALGORITHM, getDefaultAlgorithm()));
         encryptor.setKeyObtentionIterations(parseInt(property(JASYPT_ITERATIONS, Integer.toString(getDefaultIterations()))));
         encryptor.setIvGenerator(new RandomIvGenerator());
