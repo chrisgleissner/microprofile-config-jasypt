@@ -1,9 +1,8 @@
 # microprofile-config-jasypt
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.chrisgleissner.config/microprofile-config-jasypt)](https://search.maven.org/artifact/com.github.chrisgleissner.config/microprofile-config-jasypt/)
-[![Build Status](https://travis-ci.com/chrisgleissner/config.svg?branch=master)](https://travis-ci.com/chrisgleissner/config)
-[![Coverage Status](https://coveralls.io/repos/github/chrisgleissner/config/badge.svg?branch=master)](https://coveralls.io/github/chrisgleissner/config?branch=master)
-[![Maintainability](https://api.codeclimate.com/v1/badges/68a242cd2d727a5af43d/maintainability)](https://codeclimate.com/github/chrisgleissner/config/maintainability)
+![Build Status](https://github.com/chrisgleissner/microprofile-config-jasypt/actions/workflows/build.yml/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/chrisgleissner/microprofile-config-jasypt/badge.svg?branch=master)](https://coveralls.io/github/chrisgleissner/microprofile-config-jasypt?branch=master)
 
 Encrypted properties for [Quarkus](https://quarkus.io) and [Eclipse Microprofile Config](https://github.com/eclipse/microprofile-config).
 
